@@ -1,0 +1,9 @@
+{
+  "name": "command-center",
+  "private": true,
+  "workspaces": ["frontend", "backend"],
+  "scripts": {
+    "fmt": "deno fmt backend/supabase/functions",
+    "lint": "deno lint backend/supabase/functions"
+  }
+}

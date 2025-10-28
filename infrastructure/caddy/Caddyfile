@@ -1,0 +1,61 @@
+# Caddy configuration for Command Center development proxy
+# Provides unified routing to all services with automatic HTTPS
+
+# Development domain (local)
+localhost:443 {
+    # Reverse proxy configuration
+
+    # Frontend (SvelteKit)
+    route /api/* {
+        uri strip_prefix /api
+        reverse_proxy localhost:3001
+    }
+
+    # PostgREST REST API
+    route /rest/* {
+        uri strip_prefix /rest
+        reverse_proxy postgrest:3000
+    }
+
+    # Supabase Auth
+    route /auth/* {
+        uri strip_prefix /auth
+        reverse_proxy supabase_auth:9999
+    }
+
+    # Realtime WebSocket
+    route /realtime/* {
+        uri strip_prefix /realtime
+        reverse_proxy realtime:4000
+    }
+
+    # Storage (SeaweedFS S3)
+    route /storage/* {
+        uri strip_prefix /storage
+        reverse_proxy seaweedfs_s3gateway:8333
+    }
+
+    # Metrics (Prometheus)
+    route /metrics/* {
+        uri strip_prefix /metrics
+        reverse_proxy prometheus:9090
+    }
+
+    # Health checks
+    route /health {
+        respond 200 "OK"
+    }
+
+    # Default to frontend (or 404)
+    respond 404
+}
+
+# HTTP redirect to HTTPS
+localhost:80 {
+    redir https://localhost{uri} permanent
+}
+
+# Alternative: Over-the-wire configuration for S3
+localhost:8333 {
+    reverse_proxy seaweedfs_s3gateway:8333
+}

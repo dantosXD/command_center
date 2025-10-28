@@ -1,0 +1,132 @@
+[leveldb2]
+dir = "/data"                   # directory to store level db files
+enabled = true
+
+[redis]
+address = "redis:6379"
+password = ""
+database = 0
+
+[filer]
+# Filer HTTP server listening port
+http.port = 8888
+
+# Filer gRPC server listening port
+grpc.port = 18888
+
+# read/write encryption options
+[filer.options]
+# Whether to encrypt file data in filer store
+encrypt_volume_data = false
+
+# Maximum file size to upload to filer, bytes, default is 32MB
+max_file_size_mb = 128
+
+# Default collection to write to
+collection = ""
+
+# Bypass CDN when fetching files, false by default
+disable_public_url = false
+
+# Expose filer server via HTTP, true by default
+# It should be false for other filer servers to talk to each other.
+# The master and volume servers still need to expose themselves via HTTP.
+expose_filer_http = true
+
+# Concurrent http request limit to filer servers
+concurrent_upload_limit_mb = 256
+
+# Filer metadata store
+[mysql]
+hostname = "mysql"
+port = 3306
+username = "root"
+password = "seaweedfs"
+database = "seaweedfs"
+connection_max_idle = 2
+connection_max_open = 256
+connection_max_lifetime_seconds = 0
+security.tls_enabled = false
+security.ca_cert = ""
+security.cert = ""
+security.key = ""
+
+# Enable S3 API for filer
+[s3]
+# S3 API listening port
+port = 8333
+
+# Filer server for s3
+filer = "filer:8888"
+
+# domain name to listen on
+domain = "s3.local"
+
+# Use https
+https = false
+
+# tls cert file
+cert.file = ""
+
+# tls key file
+key.file = ""
+
+# aws IAM access key
+access_key = "ACCESS_KEY"
+
+# aws IAM secret key
+secret_key = "SECRET_KEY"
+
+# Comma separated role arns, e.g., arn:aws:iam::123456789012:role/S3Admin,arn:aws:iam::123456789012:role/S3User
+# or just a single arn.
+# You can also set environment variable SEAWEEDFS_S3_ROLE_ARN
+# role_arn = ""
+
+# aws region
+region = "us-east-1"
+
+# Comma separated buckets, ignored by default (allow any bucket)
+#buckets = "testbucket1,testbucket2"
+
+# Allow empty buckets (the bucket folder does not need to exist)
+allow_empty_bucket = true
+
+# optional action to authenticate requests
+# If not set, the requests are always authenticated.
+# If set to "Read", the GET and HEAD requests are always allowed.
+# If set to "Write", the PUT, POST, DELETE requests are always allowed.
+# If set to "ReadWrite", all GET, HEAD, PUT, POST, DELETE requests are always allowed.
+allow_anonymous_access = false
+
+# optional actions that can bypass authentication
+# If set to "Read", the GET and HEAD requests are always allowed.
+# If set to "Write", the PUT, POST, DELETE requests are always allowed.
+# If set to "ReadWrite", all GET, HEAD, PUT, POST, DELETE requests are always allowed.
+# If set to "", all requests need authentication.
+#allow_anonymous_actions = ""
+
+# optional actions that can bypass authentication by ip address or ip range
+# e.g., "192.168.0.0/24,10.0.0.0/8"
+#allow_ip_range = ""
+
+# optional CORS configuration
+[cors]
+# allowed origins for CORS requests
+allowed_origins = "*"
+# allowed methods for CORS requests
+allowed_methods = "GET,POST,PUT,DELETE,OPTIONS"
+# allowed headers for CORS requests
+allowed_headers = "*"
+# exposed headers for CORS requests
+exposed_headers = "ETag"
+# allow credentials for CORS requests
+allow_credentials = true
+# max age for CORS requests
+max_age_seconds = 172800
+
+# optional auditing
+[audit]
+# enable auditing
+enabled = false
+# audit log file
+log_file = "/var/log/seaweedfs/audit.log"

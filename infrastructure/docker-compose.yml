@@ -1,0 +1,268 @@
+version: '3.9'
+
+# Command Center MVP - Local Development Stack
+# Phase 2: Docker Compose infrastructure for all services
+# Run: docker-compose up -d
+
+services:
+  # PostgreSQL 15 - Core database
+  postgres:
+    image: postgres:15-alpine
+    container_name: command_center_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: command_center
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/supabase/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  # Supabase (GoTrue Auth Service)
+  supabase_auth:
+    image: supabase/gotrue:v2.101.0
+    container_name: command_center_supabase_auth
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:postgres@postgres:5432/command_center
+      GOTRUE_JWT_SECRET: your-super-secret-jwt-token-min-32-characters-long
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_MAILER_SECURE_EMAIL_CHANGE_ENABLED: "true"
+      GOTRUE_SMTP_HOST: postal
+      GOTRUE_SMTP_PORT: 25
+      GOTRUE_SMTP_USER: ""
+      GOTRUE_SMTP_PASS: ""
+      GOTRUE_SMTP_ADMIN_EMAIL: admin@example.com
+      GOTRUE_SMTP_FROM_NAME: "Command Center"
+      GOTRUE_SMTP_FROM_EMAIL: noreply@example.com
+      GOTRUE_SITE_URL: http://localhost:3000
+      GOTRUE_URI_ALLOW_LIST: "http://localhost:3000,http://localhost:5173"
+      GOTRUE_DISABLE_SIGNUP: "false"
+    ports:
+      - "9999:9999"
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  # PostgREST - Auto-generated REST API
+  postgrest:
+    image: postgrest/postgrest:v12.0.1
+    container_name: command_center_postgrest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://postgres:postgres@postgres:5432/command_center
+      PGRST_DB_SCHEMAS: public,storage
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_DB_USE_LEGACY_GUESSING: "false"
+      PGRST_JWT_SECRET: your-super-secret-jwt-token-min-32-characters-long
+      PGRST_JWT_AUD: authenticated
+      PGRST_OPENAPI_SERVER_PROXY_URL: http://localhost:3000
+    ports:
+      - "3001:3000"
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  # Supabase Realtime (WebSocket subscriptions)
+  realtime:
+    image: supabase/realtime:v2.27.0
+    container_name: command_center_realtime
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_NAME: command_center
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_PORT: 5432
+      SECURE_CHANNELS: "true"
+      JWT_SECRET: your-super-secret-jwt-token-min-32-characters-long
+      API_JWT_EXP: 3600
+      REPLICATION_MODE: RLS
+      LOG_LEVEL: debug
+    ports:
+      - "4000:4000"
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  # SeaweedFS - S3-compatible object storage
+  seaweedfs_master:
+    image: chrislusf/seaweedfs:3.53
+    container_name: command_center_seaweedfs_master
+    command: master -ip seaweedfs_master -metricsPort 9324
+    ports:
+      - "9333:9333"
+      - "9324:9324"
+    environment:
+      WEED_VOLUME_MAX: 7
+      WEED_MASTER_VOLUME_GROWTH_COPY_1: 1
+      WEED_MASTER_VOLUME_GROWTH_COPY_2: 2
+      WEED_MASTER_VOLUME_GROWTH_COPY_3: 3
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  seaweedfs_volume:
+    image: chrislusf/seaweedfs:3.53
+    container_name: command_center_seaweedfs_volume
+    command: volume -ip seaweedfs_volume -master seaweedfs_master:9333 -port 8080 -metricsPort 9325
+    ports:
+      - "8080:8080"
+      - "9325:9325"
+    depends_on:
+      - seaweedfs_master
+    environment:
+      WEED_VOLUME_MAX: 7
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  seaweedfs_s3gateway:
+    image: chrislusf/seaweedfs:3.53
+    container_name: command_center_seaweedfs_s3
+    command: s3 -ip seaweedfs_s3gateway -filer seaweedfs_volume:8080 -port 8333 -allowEmptyFolder=true
+    ports:
+      - "8333:8333"
+    depends_on:
+      - seaweedfs_volume
+    environment:
+      WEED_FILER_ENABLED: "true"
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  # Postal - Email SMTP server
+  postal_database:
+    image: mariadb:latest
+    container_name: command_center_postal_db
+    environment:
+      MYSQL_ROOT_PASSWORD: postal
+      MYSQL_DATABASE: postal
+      MYSQL_USER: postal
+      MYSQL_PASSWORD: postal
+    volumes:
+      - postal_db_data:/var/lib/mysql
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  postal:
+    image: postalserver/postal:latest
+    container_name: command_center_postal
+    depends_on:
+      - postal_database
+    environment:
+      POSTAL_SMTP_SERVER_BIND_PORT: 25
+      POSTAL_API_ENABLED: "true"
+      POSTAL_API_BIND_PORT: 5000
+    ports:
+      - "25:25"        # SMTP
+      - "5000:5000"    # API
+    volumes:
+      - postal_data:/opt/postal/data
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  # Caddy - Reverse proxy with TLS (development)
+  caddy:
+    image: caddy:latest
+    container_name: command_center_caddy
+    depends_on:
+      - postgrest
+      - supabase_auth
+      - realtime
+      - seaweedfs_s3gateway
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  # Redis - Optional caching layer (Phase 5+)
+  redis:
+    image: redis:7-alpine
+    container_name: command_center_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  # Prometheus - Metrics collection (optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: command_center_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+  # Grafana - Metrics visualization (optional)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: command_center_grafana
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_INSTALL_PLUGINS: grafana-piechart-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - command_center_network
+    restart: unless-stopped
+
+networks:
+  command_center_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  postal_db_data:
+  postal_data:
+  redis_data:
+  caddy_data:
+  caddy_config:
+  prometheus_data:
+  grafana_data:

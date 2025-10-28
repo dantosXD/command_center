@@ -1,0 +1,62 @@
+services:
+  master:
+    image: chrislusf/seaweedfs:latest
+    ports:
+      - "9333:9333"
+    command: 'master -volumeSizeLimitMB=1024 -ip=master'
+    networks: [seaweedfs]
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://master:9333/cluster/status']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  volume:
+    image: chrislusf/seaweedfs:latest
+    ports:
+      - "8080:8080"
+    command: 'volume -mserver="master:9333" -ip=volume -port=8080 -dir=/data -max=5'
+    volumes: ['./data:/data']
+    depends_on: [master]
+    networks: [seaweedfs]
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://volume:8080/status']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  filer:
+    image: chrislusf/seaweedfs:latest
+    ports:
+      - "8888:8888"
+      - "18888:18888"
+    command: 'filer -master="master:9333" -ip=filer -port=8888'
+    volumes: ['./filer.toml:/etc/seaweedfs/filer.toml:ro']
+    depends_on: [master, volume]
+    networks: [seaweedfs]
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://filer:8888/']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  s3:
+    image: chrislusf/seaweedfs:latest
+    ports:
+      - "8333:8333"
+    command: 's3 -filer="filer:8888" -domain.name=s3.local -access.key=ACCESS_KEY -secret.key=SECRET_KEY'
+    depends_on: [filer]
+    networks: [seaweedfs]
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://s3:8333/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  seaweedfs:
+    driver: bridge

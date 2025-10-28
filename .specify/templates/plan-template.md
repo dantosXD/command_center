@@ -31,7 +31,15 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify the feature plan satisfies every constitution guardrail:
+
+- ✅ Accessibility: Define WCAG 2.2 AA acceptance criteria and audit strategy (manual + automated).
+- ✅ Security: Document RLS policy updates, threat model notes, and secret handling.
+- ✅ Testing: Identify required unit, contract, RLS, and e2e smoke suites and owners.
+- ✅ Delivery: Describe feature flag rollout plan, rollback triggers, and sunset timing.
+- ✅ Operations: Confirm idempotent job/workflow design and disaster recovery implications.
+- ✅ Build & Release: Capture reproducibility constraints (pinned deps, build tooling) for implementation.
+- ✅ Documentation: List ADR(s) that will record architectural decisions in `/docs/adr`.
 
 ## Project Structure
 

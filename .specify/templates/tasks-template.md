@@ -8,7 +8,7 @@ description: "Task list template for feature implementation"
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: The examples below include test tasks. Tests are MANDATORY per the constitution—include unit, contract, RLS tests, and e2e smoke coverage; include accessibility audits for UI work.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -51,6 +51,9 @@ description: "Task list template for feature implementation"
 - [ ] T001 Create project structure per implementation plan
 - [ ] T002 Initialize [language] project with [framework] dependencies
 - [ ] T003 [P] Configure linting and formatting tools
+- [ ] T004 Establish reproducible build config (pinned deps, lockfiles, hermetic tooling)
+- [ ] T005 Setup feature flag framework with per-tenant controls
+- [ ] T006 Initialize `/docs/adr` directory and ADR template
 
 ---
 
@@ -62,12 +65,14 @@ description: "Task list template for feature implementation"
 
 Examples of foundational tasks (adjust based on your project):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
+- [ ] T007 Setup database schema and migrations framework with RLS policies
+- [ ] T008 [P] Implement authentication/authorization framework and secrets vault integration
+- [ ] T009 [P] Setup API routing and middleware structure with feature flag guards
+- [ ] T010 Create base models/entities that all stories depend on
+- [ ] T011 Configure error handling, structured logging, and audit trails
+- [ ] T012 Setup environment configuration management and disaster recovery playbooks
+- [ ] T013 Define automated accessibility audit pipeline
+- [ ] T014 Establish contract, RLS, unit, and e2e test harnesses in CI
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -79,21 +84,24 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
+### Tests for User Story 1 (MANDATORY) ⚠️
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T015 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T016 [P] [US1] Row-Level Security test for [resource] in tests/security/test_[name].py
+- [ ] T017 [P] [US1] Unit tests for [module] in tests/unit/test_[name].py
+- [ ] T018 [P] [US1] E2E smoke test for [journey] in tests/e2e/test_[name].py
+- [ ] T019 [P] [US1] Accessibility audit script updates covering new UI
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T020 [P] [US1] Create [Entity1] model in src/models/[entity1].py
+- [ ] T021 [P] [US1] Create [Entity2] model in src/models/[entity2].py
+- [ ] T022 [US1] Implement [Service] in src/services/[service].py (depends on T020, T021)
+- [ ] T023 [US1] Implement [endpoint/feature] in src/[location]/[file].py with flag guard
+- [ ] T024 [US1] Add validation, error handling, and audit logging
+- [ ] T025 [US1] Ensure operations are idempotent and retry-safe
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -105,17 +113,20 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
+### Tests for User Story 2 (MANDATORY) ⚠️
 
-- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T026 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T027 [P] [US2] Row-Level Security test for [resource] in tests/security/test_[name].py
+- [ ] T028 [P] [US2] Unit tests for [module] in tests/unit/test_[name].py
+- [ ] T029 [P] [US2] E2E smoke test for [journey] in tests/e2e/test_[name].py
+- [ ] T030 [P] [US2] Accessibility audit script updates covering new UI
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
-- [ ] T021 [US2] Implement [Service] in src/services/[service].py
-- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T023 [US2] Integrate with User Story 1 components (if needed)
+- [ ] T031 [P] [US2] Create [Entity] model in src/models/[entity].py
+- [ ] T032 [US2] Implement [Service] in src/services/[service].py with flag guard
+- [ ] T033 [US2] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T034 [US2] Integrate with User Story 1 components while maintaining idempotency
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -127,16 +138,20 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
+### Tests for User Story 3 (MANDATORY) ⚠️
 
-- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T035 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T036 [P] [US3] Row-Level Security test for [resource] in tests/security/test_[name].py
+- [ ] T037 [P] [US3] Unit tests for [module] in tests/unit/test_[name].py
+- [ ] T038 [P] [US3] E2E smoke test for [journey] in tests/e2e/test_[name].py
+- [ ] T039 [P] [US3] Accessibility audit script updates covering new UI
 
 ### Implementation for User Story 3
 
-- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
-- [ ] T027 [US3] Implement [Service] in src/services/[service].py
-- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T040 [P] [US3] Create [Entity] model in src/models/[entity].py
+- [ ] T041 [US3] Implement [Service] in src/services/[service].py with flag guard
+- [ ] T042 [US3] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T043 [US3] Ensure observability, idempotency, and audit logging remain consistent
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -154,8 +169,9 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
-- [ ] TXXX Security hardening
+- [ ] TXXX Security hardening (RLS verification, secrets audit, threat model refresh)
 - [ ] TXXX Run quickstart.md validation
+- [ ] TXXX Update ADRs and release notes with deployed flag status
 
 ---
 
