@@ -8,8 +8,8 @@
   let loading = true;
 
   // Initialize auth and redirect if not authenticated
-  onMount(async () => {
-    await authStore.initialize();
+  onMount(() => {
+    authStore.initialize();
 
     const unsubscribe = isAuthenticated.subscribe(($isAuth) => {
       if (!$isAuth && !loading) {

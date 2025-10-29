@@ -25,12 +25,10 @@
   /**
    * Load tasks on mount
    */
-  onMount(async () => {
-    try {
-      await taskStore.loadTasks(domainId);
-    } catch (err) {
+  onMount(() => {
+    taskStore.loadTasks(domainId).catch((err) => {
       console.error('Failed to load tasks:', err);
-    }
+    });
 
     // Set up keyboard shortcuts
     const handleShortcuts = createShortcutListener({
