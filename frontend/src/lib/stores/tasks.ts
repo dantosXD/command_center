@@ -38,9 +38,84 @@ export interface TaskState {
   };
 }
 
+// Mock data for development
+const MOCK_TASKS: Task[] = [
+  {
+    id: '1',
+    domain_id: 'default',
+    title: 'Design new dashboard layout',
+    description: 'Create mockups and wireframes for the hub dashboard',
+    status: 'in-progress',
+    priority: 3,
+    due_at: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+    assigned_to: 'you',
+    created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '2',
+    domain_id: 'default',
+    title: 'Review Q4 budget proposal',
+    description: 'Analyze budget allocation for Q4 2025',
+    status: 'backlog',
+    priority: 2,
+    due_at: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+    assigned_to: 'Sarah',
+    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '3',
+    domain_id: 'default',
+    title: 'Fix login authentication bug',
+    description: 'Users report 404 errors when redirecting after login. Investigate and fix.',
+    status: 'in-progress',
+    priority: 4,
+    due_at: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
+    assigned_to: 'Alex',
+    created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '4',
+    domain_id: 'default',
+    title: 'Write API documentation',
+    description: 'Document PostgREST endpoints and response schemas',
+    status: 'done',
+    priority: 2,
+    completed_at: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '5',
+    domain_id: 'default',
+    title: 'Prepare team meeting agenda',
+    description: 'Draft agenda items for Friday standup',
+    status: 'backlog',
+    priority: 1,
+    due_at: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+    assigned_to: 'you',
+    created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '6',
+    domain_id: 'default',
+    title: 'Deploy v2.0 to production',
+    description: 'Run deployment script and verify all services are healthy',
+    status: 'blocked',
+    priority: 4,
+    due_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    assigned_to: 'DevOps',
+    created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+];
+
 export function createTaskStore() {
   const store = writable<TaskState>({
-    tasks: [],
+    tasks: MOCK_TASKS,
     loading: false,
     error: null,
   });

@@ -1,4 +1,4 @@
-import { writable, derived } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { supabase } from '$lib/supabaseClient';
 import { domainStore } from '$lib/stores/domain';
 
@@ -114,12 +114,12 @@ function createHubSearchService() {
       ...s,
       query: view.query ?? '',
       domainId: view.domain_id ?? null,
-      statuses: view.statuses,
-      priorities: view.priorities,
-      dueFrom: view.due_from,
-      dueTo: view.due_to,
-      eventStartsFrom: view.event_starts_from,
-      eventStartsTo: view.event_starts_to,
+      statuses: view.statuses ?? null,
+      priorities: view.priorities ?? null,
+      dueFrom: view.due_from ?? null,
+      dueTo: view.due_to ?? null,
+      eventStartsFrom: view.event_starts_from ?? null,
+      eventStartsTo: view.event_starts_to ?? null,
     }));
     execute();
   }
@@ -128,7 +128,7 @@ function createHubSearchService() {
   function getState(): HubSearchState {
     let snap: HubSearchState | undefined;
     subscribe((s) => (snap = s))();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     return snap!;
   }
 

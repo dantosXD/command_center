@@ -1,20 +1,14 @@
 <script lang="ts">
-  import { domainStore } from '$lib/stores/domain';
+  import { domainStore, selectedDomain } from '$lib/stores/domain';
 
   let open = false;
-  let error: string | null = null;
 
   function toggle() {
     open = !open;
-    error = null;
   }
 
   async function select(id: string | null) {
     domainStore.setSelectedId(id);
-    open = false;
-  }
-
-  function close() {
     open = false;
   }
 </script>
@@ -28,9 +22,9 @@
     aria-haspopup="listbox"
     aria-label="Switch domain"
   >
-    {#if $domainStore.selected}
-      <span class="w-2 h-2 rounded-full inline-block" style="background-color: {$domainStore.selected.color || 'currentColor'}" />
-      <span>{$domainStore.selected.name}</span>
+    {#if $selectedDomain}
+      <span class="w-2 h-2 rounded-full inline-block" style="background-color: {$selectedDomain.color || 'currentColor'}"></span>
+      <span>{$selectedDomain.name}</span>
     {:else}
       <span>All Domains</span>
     {/if}
@@ -63,7 +57,7 @@
               <span
                 class="w-2 h-2 rounded-full"
                 style="background-color: {domain.color || 'currentColor'}"
-              />
+              ></span>
               <span>{domain.name}</span>
             </button>
           </li>

@@ -1,15 +1,11 @@
-import { expect, afterEach, vi } from 'vitest';
-import { cleanup } from '@testing-library/svelte';
+import { expect, vi } from 'vitest';
 
 /**
  * Global test setup for Vitest
  * Runs before each test file
  */
 
-// Cleanup DOM after each test
-afterEach(() => {
-  cleanup();
-});
+// If component tests need DOM cleanup, import @testing-library/svelte within those tests.
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {

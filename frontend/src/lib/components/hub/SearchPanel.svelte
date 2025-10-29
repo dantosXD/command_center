@@ -70,7 +70,13 @@
     role="region"
     aria-label="Search and filters"
   >
-    <div class="fixed inset-0 bg-black/20" on:click={close} />
+    <div
+      class="fixed inset-0 bg-black/20"
+      role="button"
+      tabindex="0"
+      on:click={close}
+      on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && close()}
+    ></div>
     <div class="relative w-full max-w-2xl bg-background border rounded-lg shadow-lg p-6 space-y-4">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold">Search</h2>
@@ -87,7 +93,6 @@
             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             on:keydown={onKeydown}
             disabled={loading}
-            autofocus
           />
         </label>
         <div class="flex gap-2 mt-2">

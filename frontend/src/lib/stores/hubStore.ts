@@ -1,7 +1,7 @@
 import { writable, derived, get } from 'svelte/store';
 import { supabase } from '$lib/supabaseClient';
 import { domainStore } from './domain';
-import type { HubItem, QuickAddParsed } from '$lib/types/hub';
+import type { HubItem } from '$lib/types/hub';
 
 interface HubState {
   items: HubItem[];
@@ -57,7 +57,7 @@ function createHubStore() {
   }
 
   // Quick-add intent parsing handled by quick-add utility
-  async function createQuickAdd(input: string) {
+  async function createQuickAdd(_input: string) {
     // Parse via quickAdd utility
     // Then call tasks/events RPCs to insert
     // Finally, refresh hub
@@ -119,22 +119,24 @@ function createHubStore() {
 export const hubStore = createHubStore();
 
 // Derived helpers
-export const todayItems = derived<HubState, HubItem[]>(
+export const todayItems = derived(
   hubStore,
-  ($state) =>
+  ($state: HubState) =>
     $state.items.filter(
-      (item) =>
+      (item: HubItem) =>
         (item.type === 'task' && item.due_at && new Date(item.due_at).toDateString() === new Date().toDateString()) ||
         (item.type === 'event' && item.starts_at && new Date(item.starts_at).toDateString() === new Date().toDateString()),
     ),
+  [] as HubItem[],
 );
 
-export const upcomingItems = derived<HubState, HubItem[]>(
+export const upcomingItems = derived(
   hubStore,
-  ($state) =>
+  ($state: HubState) =>
     $state.items.filter(
-      (item) =>
+      (item: HubItem) =>
         (item.type === 'task' && item.due_at && new Date(item.due_at) > new Date()) ||
         (item.type === 'event' && item.starts_at && new Date(item.starts_at) > new Date()),
     ),
+  [] as HubItem[],
 );

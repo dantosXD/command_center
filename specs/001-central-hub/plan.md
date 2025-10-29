@@ -18,7 +18,7 @@ Deliver a self-hosted Command Center that consolidates domains, projects, tasks,
 -->
 
 **Language/Version**: TypeScript (SvelteKit 1.x), Deno 1.45 (Edge Functions), SQL (Postgres 15+), Bash/PowerShell for ops automation.  
-**Primary Dependencies**: Supabase (PostgREST, GoTrue, Realtime, Edge Functions), pg_cron, pg_trgm, TailwindCSS, Headless UI/Radix, TanStack Query, TipTap, Supabase JS SDK, Caddy/Trafik, Postal/Postfix, Prometheus/Grafana/Loki, Sentry.  
+**Primary Dependencies**: Supabase (PostgREST, GoTrue, Realtime, Edge Functions), pg_cron, pg_trgm, TailwindCSS, Headless UI/Radix, TanStack Query, TipTap, Supabase JS SDK, Caddy/Traefik, Postal/Postfix, Prometheus/Grafana/Loki, Sentry.  
 **Storage**: Supabase Postgres (workspace/domain tenancy, notifications, audit), SeaweedFS (S3-compatible object storage).  
 **Testing**: Vitest + Testing Library for unit/UI, Playwright for e2e smoke, Supabase testing harness for RLS/contract suites, k6 for load on schedulers, custom Deno test runners for Edge Functions.  
 **Target Platform**: Self-hosted Docker Compose (dev/staging) with path to k3s/Kubernetes for HA; PWA-capable web clients (desktop & mobile browsers).  

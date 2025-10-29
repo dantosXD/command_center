@@ -196,6 +196,9 @@
 - [X] T095 [US4] Implement presence and reporting feed RPCs in `backend/supabase/functions/presence-feed/index.ts`
 - [X] T096 [US4] Implement CSV export RPC applying domain filters and column masking in `backend/supabase/functions/csv-export/index.ts` (critical path)
 - [X] T097 [US4] Define CSV export SQL views and auditing hooks to scrub sensitive fields in `backend/supabase/migrations/0017_csv_exports.sql` (critical path)
+- [X] T098-A [US4] Implement email unsubscribe footer generation with CAN-SPAM/GDPR compliance statements in `backend/outbox/templates/email/unsubscribe-footer.ts` (critical path)
+- [X] T098-B [US4] Add unsubscribe link handler and preference persistence in `backend/supabase/functions/unsubscribe/index.ts` with audit logging (critical path)
+- [X] T098-C [US4] Create contract tests for unsubscribe endpoint and footer rendering in `tests/contract/unsubscribe.spec.ts` (critical path)
 
 ### Frontend (US4)
 
@@ -220,6 +223,9 @@
 - [X] T111 Update deployment guide for dev → staging promotion, feature flag rollout, and rollback plan in `docs/operations/deployment.md`
 - [X] T112 [P] Execute final accessibility regression suite across hub, domains, calendar, and notifications in `tests/accessibility/regression.md`
 - [X] T113 Validate quickstart instructions and craft smoke checklist in `specs/001-central-hub/quickstart.md`
+- [X] T114 [P] Implement localization validation tests for date/time formatting across locales (en-US, de-DE, ja-JP) and DST transitions in `tests/localization/date-formatting.spec.ts` (critical path)
+- [X] T115 [P] Create email footer compliance tests verifying unsubscribe links, CAN-SPAM/GDPR statements, and locale-appropriate legal text in `tests/localization/email-footer.spec.ts` (critical path)
+- [X] T116 Implement velocity metric calculation and display tests in `tests/performance/velocity-metric.spec.ts` validating slope computation and +/-% WoW accuracy (critical path)
 
 ---
 

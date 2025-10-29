@@ -71,7 +71,13 @@
     aria-modal="true"
     aria-labelledby="quick-add-title"
   >
-    <div class="fixed inset-0 bg-black/20" on:click={close} />
+    <div
+      class="fixed inset-0 bg-black/20"
+      role="button"
+      tabindex="0"
+      on:click={close}
+      on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && close()}
+    ></div>
     <div class="relative w-full max-w-md bg-background border rounded-lg shadow-lg p-6 space-y-4">
       <h2 id="quick-add-title" class="text-lg font-semibold">Add Task or Event</h2>
       <form on:submit|preventDefault={submit}>
@@ -84,7 +90,6 @@
             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             on:keydown={onKeydown}
             disabled={loading}
-            autofocus
           />
           <small class="text-muted-foreground">
             Use natural language. Include times or dates, or prefix with @domain.

@@ -1,4 +1,4 @@
-import { writable, derived } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { supabase } from '$lib/supabaseClient';
 import { hubStore } from './hubStore';
 import { domainStore } from './domain';
@@ -11,7 +11,7 @@ interface RealtimeState {
 }
 
 function createHubRealtimeStore() {
-  const { subscribe, set, update } = writable<RealtimeState>({
+  const { subscribe, update } = writable<RealtimeState>({
     status: 'disconnected',
     error: null,
   });

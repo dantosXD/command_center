@@ -19,7 +19,7 @@ interface DomainState {
 }
 
 function createDomainStore() {
-  const { subscribe, set, update } = writable<DomainState>({
+  const store = writable<DomainState>({
     domains: [],
     selectedId: null,
     loading: false,
@@ -28,13 +28,13 @@ function createDomainStore() {
 
   // Load domains for the authenticated user
   async function loadDomains() {
-    update((s) => ({ ...s, loading: true, error: null }));
+    store.update((s) => ({ ...s, loading: true, error: null }));
     const {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser();
     if (userError || !user) {
-      update((s) => ({ ...s, loading: false, error: 'Not authenticated' }));
+      store.update((s) => ({ ...s, loading: false, error: 'Not authenticated' }));
       return;
     }
 
@@ -47,7 +47,7 @@ function createDomainStore() {
       .order('created_at');
 
     if (error) {
-      update((s) => ({ ...s, loading: false, error: error.message }));
+      store.update((s) => ({ ...s, loading: false, error: error.message }));
       return;
     }
 
@@ -69,12 +69,12 @@ function createDomainStore() {
       }
     }
 
-    set({ domains, selectedId, loading: false, error: null });
+    store.set({ domains, selectedId, loading: false, error: null });
   }
 
   // Set the active domain and persist it
   function setSelectedId(id: string | null) {
-    update((s) => {
+    store.update((s) => {
       const next = { ...s, selectedId: id };
       if (browser && typeof localStorage !== 'undefined') {
         if (id) {
@@ -88,19 +88,25 @@ function createDomainStore() {
   }
 
   // Helper derived store for current domain object
-  const selected = derived<DomainState, Domain | null>(
-    subscribe,
-    ($state) => $state.domains.find((d) => d.id === $state.selectedId) || null,
+  const selected = derived<typeof store, Domain | null>(
+    store,
+    ($state: DomainState) => $state.domains.find((d) => d.id === $state.selectedId) || null,
   );
 
   // Expose methods and derived stores
   return {
-    subscribe,
+    subscribe: store.subscribe,
     loadDomains,
     setSelectedId,
     selected,
-    reset: () => set({ domains: [], selectedId: null, loading: false, error: null }),
+    reset: () => store.set({ domains: [], selectedId: null, loading: false, error: null }),
   };
 }
 
 export const domainStore = createDomainStore();
+
+// Separate exported derived store for the currently selected domain object
+export const selectedDomain = derived<typeof domainStore, Domain | null>(
+  domainStore,
+  ($state: any) => $state.domains.find((d: Domain) => d.id === $state.selectedId) || null,
+);

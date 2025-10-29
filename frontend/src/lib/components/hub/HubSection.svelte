@@ -1,11 +1,9 @@
 <script lang="ts">
   import { todayItems, upcomingItems } from '$lib/stores/hubStore';
-  import { domainStore } from '$lib/stores/domain';
 
   export let section: 'Today' | 'Upcoming';
 
   $: items = section === 'Today' ? $todayItems : $upcomingItems;
-  $: selectedDomainId = $domainStore.selectedId;
 
   // Group by domain
   $: grouped = items.reduce((acc, item) => {
@@ -44,7 +42,7 @@
             <span
               class="w-2 h-2 rounded-full"
               style="background-color: {domain.domain_color || 'currentColor'}"
-            />
+            ></span>
             <span>{domainName}</span>
           </div>
           <ul class="space-y-2" data-domain-id={domain.domain_id}>

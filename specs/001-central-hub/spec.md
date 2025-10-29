@@ -83,9 +83,10 @@ As a collaborator I want comments, mentions, and dashboard summaries so teams st
 ### Edge Cases
 
 - User changes system time zone after scheduling recurring events -> notifications and calendar export must rebase to new zone without duplicating events.
-- Two members edit the same rich-text note concurrently -> last write wins with optimistic UI; CRDT deferred.
+- Two members edit the same rich-text note concurrently -> last write wins with optimistic UI; CRDT deferred. Minimal test coverage required (see TS-006).
 - Task dependencies form a circular reference -> system rejects save with guidance to break loop.
 - Feature flag disabled mid-session -> hub modules respect flag and hide beta widgets without error.
+- Email reminder unsubscribe link clicked -> user preference persists and future reminders respect opt-out; audit log records action.
 
 ### Accessibility & Compliance Notes *(mandatory)*
 
@@ -94,14 +95,9 @@ As a collaborator I want comments, mentions, and dashboard summaries so teams st
 - Security: Enforce per-domain Row-Level Security with tenant scoping on every query and redact cross-domain references in notifications.
 - Security: Run threat model sessions for notifications and exports; store audit logs immutably for one year.
 - Privacy: Persist user preferences with consent, allow reminder opt-outs, and log access to private domains.
-- Privacy: Email reminders must include unsubscribe footer aligned with CAN-SPAM/GDPR compliance and respect locale formatting.
+- Privacy: Email reminders must include unsubscribe footer aligned with CAN-SPAM/GDPR compliance, respect locale formatting, and log all unsubscribe actions in audit trail.
 
 ## Requirements *(mandatory)*
-
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
--->
 
 ### Functional Requirements
 
@@ -111,20 +107,20 @@ As a collaborator I want comments, mentions, and dashboard summaries so teams st
 - **FR-004**: Users MUST be able to create events/meetings with time zone handling, attendees, recurrence, reminders, and links to related tasks/projects.
 - **FR-005**: Hub view MUST aggregate Today and Upcoming items across domains, with ability to focus a single domain and offer quick-add via command palette and natural language.
 - **FR-006**: Calendar views MUST provide day/week/month layouts, multi-calendar overlays, drag/drop scheduling, and natural-language quick add for tasks/events.
-- **FR-007**: Notification system MUST deliver in-app and email alerts for due/overdue tasks, assignments, mentions, status changes, and event reminders in recipient locale.
-- **FR-008**: Reporting dashboard MUST surface overdue counts, upcoming workload, lightweight velocity proxy, and export tasks to CSV plus calendars to ICS.
+- **FR-007**: Notification system MUST deliver in-app and email alerts for due/overdue tasks, assignments, mentions, status changes, and event reminders in recipient locale, with email footers including unsubscribe links and CAN-SPAM/GDPR compliance statements.
+- **FR-008**: Reporting dashboard MUST surface overdue counts, upcoming workload, velocity proxy (weekly completed tasks trend with slope calculation over last 4 weeks; display +/-% week-over-week), and export tasks to CSV plus calendars to ICS.
 - **FR-009**: System MUST integrate a basic Slack outbound webhook for task and event notifications with scope-limited payloads.
 - **FR-010**: Search MUST combine full-text and structured filters (assignee, status, due range, project, domain) with saved filter capability.
 - **FR-011**: Collaboration MUST support comments with @mentions, presence indicators, optimistic updates, and activity timelines per item.
 - **FR-012**: Audit log MUST capture privileged actions (role changes, visibility edits, exports) with timestamp, actor, and domain context.
 - **FR-013**: Export flows MUST respect domain-level permissions and produce sanitized CSV/ICS files.
-- **FR-014**: System MUST localize dates, times, and reminders according to user preferences.
+- **FR-014**: System MUST localize dates, times, and reminders according to user preferences, including locale-specific formatting (e.g., en-US: MM/DD/YYYY, de-DE: DD.MM.YYYY), timezone-aware scheduling with DST transition handling, and email reminder footers respecting user locale.
 - **FR-015**: Users MUST access a keyboard-first command palette covering creation, navigation, and quick filters.
 
 ### Security & Resilience Requirements
 
 - **SR-001**: Implement domain-scoped Row-Level Security policies for all items, collections, notifications, exports, and search indices.
-- **SR-002**: Ensure reminder dispatchers, recurring job generators, and export pipelines are idempotent and retry-safe with deduplicated delivery logs.
+- **SR-002**: Ensure reminder dispatchers, recurring job generators, and export pipelines are idempotent and retry-safe with deduplicated delivery logs. Email reminders MUST include unsubscribe links and locale-appropriate legal footers (CAN-SPAM/GDPR).
 - **SR-003**: Store integration secrets (email provider, Slack webhook credentials) in managed vaults and mask them in logs/configs.
 - **SR-004**: Provide quarterly disaster recovery drills validating restore of domains, calendars, and reminders within Recovery Time Objective agreed by governance.
 - **SR-005**: Maintain immutable audit trails and alert on unexpected cross-domain access attempts.
@@ -143,6 +139,8 @@ As a collaborator I want comments, mentions, and dashboard summaries so teams st
 - **TS-003**: Row-Level Security tests simulating cross-domain access, shared calendars, and notification delivery to ensure isolation.
 - **TS-004**: E2E smoke tests validating daily hub flow, calendar overlay interactions, reminder delivery, and CSV/ICS exports.
 - **TS-005**: Accessibility test suite executing keyboard navigation, screen reader announcements, and high-contrast visual snapshots.
+- **TS-006**: Localization tests validating date/time formatting across locales (en-US, de-DE, ja-JP), DST transitions, and email footer compliance (unsubscribe, legal text).
+- **TS-007**: Velocity metric tests confirming weekly trend calculation, slope computation, and +/-% WoW display accuracy.
 
 ### Documentation & ADRs
 

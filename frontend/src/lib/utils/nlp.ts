@@ -30,7 +30,7 @@ function parseTime(token: string): Date | null {
   const match = token.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/i);
   if (!match) return null;
 
-  let [, hoursRaw, minutesRaw, period] = match;
+  const [, hoursRaw, minutesRaw, period] = match;
   const hours = parseInt(hoursRaw, 10);
   const minutes = minutesRaw ? parseInt(minutesRaw, 10) : 0;
   let hour24 = hours;
@@ -144,7 +144,7 @@ export function parseQuickAdd(input: string): QuickAddParsed {
 /**
  * Resolve a domain name slug (from @) to a domain ID using the domainStore.
  */
-export async function resolveDomain(slug: string): Promise<string | null> {
+export async function resolveDomain(_slug: string): Promise<string | null> {
   // TODO: import domainStore and find by name slug
   return null;
 }
