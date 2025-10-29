@@ -75,6 +75,12 @@
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
 
+### Accessibility & Compliance Notes *(mandatory)*
+
+- Accessibility: Document how this feature meets WCAG 2.2 AA (automated scans, manual audits, keyboard path).
+- Security: Describe data classification, RLS policy updates, and threat model considerations.
+- Privacy: Note data retention, consent, and audit logging expectations.
+
 ## Requirements *(mandatory)*
 
 <!--
@@ -94,6 +100,30 @@
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+
+### Security & Resilience Requirements
+
+- **SR-001**: Define RLS policies or access controls impacted by this feature.
+- **SR-002**: Identify idempotent behaviour for jobs/workflows and recovery procedures.
+- **SR-003**: Capture secrets management and vault integration needs.
+
+### Delivery & Feature Flag Strategy
+
+- **FF-001**: Feature MUST ship behind flag `[flag-name]` with rollout and rollback plan.
+- **FF-002**: Outline staged rollout cohorts and automatic disable triggers.
+- **FF-003**: Plan for flag removal timeline post-GA.
+
+### Testing Strategy *(mandatory)*
+
+- **TS-001**: Unit tests covering [modules] with owner [team/person].
+- **TS-002**: Contract tests verifying [API/contract].
+- **TS-003**: Row-Level Security tests simulating [scenarios].
+- **TS-004**: E2E smoke tests validating [primary journey].
+
+### Documentation & ADRs
+
+- **DOC-001**: ADR `[adr-title]` to be added in `/docs/adr` covering architecture decisions.
+- **DOC-002**: Update operational runbooks or release notes with flag state changes.
 
 ### Key Entities *(include if feature involves data)*
 

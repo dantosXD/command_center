@@ -1,0 +1,73 @@
+# Prometheus configuration for Command Center monitoring
+# Phase 2: Foundational metrics collection
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'command-center'
+    environment: 'development'
+
+# Alerting configuration (to be expanded in Phase 7)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+          # - alertmanager:9093
+
+rule_files:
+  # - "alert_rules.yml"
+
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # PostgreSQL monitoring (pgexporter_plus or similar)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    metrics_path: '/metrics'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+  # SeaweedFS monitoring
+  - job_name: 'seaweedfs_master'
+    static_configs:
+      - targets: ['seaweedfs_master:9324']
+    metrics_path: '/metrics'
+
+  - job_name: 'seaweedfs_volume'
+    static_configs:
+      - targets: ['seaweedfs_volume:9325']
+    metrics_path: '/metrics'
+
+  # PostgREST monitoring (if exposed)
+  - job_name: 'postgrest'
+    static_configs:
+      - targets: ['postgrest:3000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Redis monitoring (optional)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    scrape_interval: 10s
+
+  # Caddy monitoring (if metrics exposed)
+  - job_name: 'caddy'
+    static_configs:
+      - targets: ['caddy:2019']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+# Target relabeling for better labels
+  - job_name: 'docker'
+    static_configs:
+      - targets:
+          - 'localhost:9323'
+        labels:
+          group: 'docker'

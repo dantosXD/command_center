@@ -1,0 +1,96 @@
+version: '3.9'
+
+# Command Center DEV - Simplified Development Stack
+# For Phase 2 Task CRUD Testing
+# Run: docker-compose -f docker-compose.dev.yml up -d
+
+services:
+  # PostgreSQL 15 - Core database
+  postgres:
+    image: postgres:15-alpine
+    container_name: command_center_postgres_dev
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: command_center
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./backend/supabase/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - command_center_dev_network
+    restart: unless-stopped
+
+  # PostgREST - Auto-generated REST API
+  postgrest:
+    image: postgrest/postgrest:v12.0.1
+    container_name: command_center_postgrest_dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://postgres:postgres@postgres:5432/command_center
+      PGRST_DB_SCHEMAS: public,storage
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_DB_USE_LEGACY_GUESSING: "false"
+      PGRST_JWT_SECRET: your-super-secret-jwt-token-min-32-characters-long-12345
+      PGRST_JWT_AUD: authenticated
+      PGRST_OPENAPI_SERVER_PROXY_URL: http://localhost:3000
+    ports:
+      - "3001:3000"
+    networks:
+      - command_center_dev_network
+    restart: unless-stopped
+
+  # Supabase Realtime (WebSocket subscriptions)
+  realtime:
+    image: supabase/realtime:v2.27.0
+    container_name: command_center_realtime_dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_NAME: command_center
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_PORT: 5432
+      SECURE_CHANNELS: "true"
+      JWT_SECRET: your-super-secret-jwt-token-min-32-characters-long-12345
+      API_JWT_EXP: 3600
+      REPLICATION_MODE: RLS
+      LOG_LEVEL: info
+    ports:
+      - "4000:4000"
+    networks:
+      - command_center_dev_network
+    restart: unless-stopped
+
+  # PgAdmin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: command_center_pgadmin_dev
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    networks:
+      - command_center_dev_network
+    restart: unless-stopped
+
+volumes:
+  postgres_dev_data:
+    driver: local
+
+networks:
+  command_center_dev_network:
+    driver: bridge

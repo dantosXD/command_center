@@ -1,50 +1,79 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+Version change: 1.0.0 -> 1.0.1
+Modified principles: none
+Added sections: none
+Removed sections: none
+Templates requiring updates:
+- ✅ .specify/templates/tasks-template.md (tests now mandatory per constitution)
+- ✅ .specify/templates/plan-template.md (no change)
+- ✅ .specify/templates/spec-template.md (no change)
+Follow-up TODOs: none
+-->
+
+# Command Center Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Deterministic Correctness
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+- All changes MUST start from executable requirements: failing tests or documented defects.
+- Business rules MUST be encoded in automated tests before implementation (red-green-refactor).
+- Production incidents MUST yield regression coverage before fixes ship.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Defense-in-Depth with Row-Level Security
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+- Row-Level Security MUST protect every data store or view that surfaces user data; no table ships without explicit policies.
+- Secrets and credentials MUST stay in managed vaults; repositories and CI logs remain secret-free.
+- Security reviews MUST cover threat models for each new surface prior to rollout.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Accessible by Default
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- User experiences MUST meet WCAG 2.2 AA, validated by automated and manual audits.
+- New UI work MUST include accessibility acceptance criteria and a keyboard-only success path.
+- Accessibility regressions block release until resolved.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Incremental Delivery Behind Feature Flags
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+- Net-new capabilities ship behind reversible feature flags with staged rollout plans.
+- Flags MUST support per-tenant overrides and automatic rollback triggers.
+- Retire flags within one milestone after general availability, documenting sunset steps.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. Idempotent and Recoverable Operations
+
+- Background jobs, queues, and workflows MUST be idempotent and safely retryable.
+- Persistent operations MUST rely on strongly consistent transactions or compensating actions.
+- Disaster recovery drills MUST validate restore procedures quarterly.
+
+### VI. Reproducible Build & Release Pipeline
+
+- Builds MUST be deterministic through pinned dependencies and hermetic toolchains.
+- CI/CD pipelines MUST capture artifact provenance and replay the same commit with identical outputs.
+- Infrastructure as Code MUST ship with validation proving idempotent apply results.
+
+### VII. Comprehensive Test Discipline
+
+- Every change MUST provide unit, contract, and row-level security tests plus e2e smoke coverage in CI before merge.
+- CI pipelines MUST fail when mandatory suites are missing or skipped.
+- Test ownership MUST be documented so failures are triaged within one business day.
+
+## Quality Gates & Testing Mandates
+
+- Definition of Done includes passing unit, contract, RLS, and e2e smoke suites plus accessibility audits for UI work.
+- Code review checklists MUST confirm tests fail before implementation and pass afterward.
+- Security and privacy impact assessments MUST be logged for features touching personal or regulated data.
+
+## Delivery Workflow & Compliance
+
+- Work items progress in small, mergeable increments protected by feature flags.
+- Each architectural decision MUST be recorded as an ADR in `/docs/adr` before merge, citing relevant principles.
+- Release notes MUST enumerate active feature flags, rollout status, and recovery procedures.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- This constitution supersedes other practices; exceptions require documented approval.
+- Amendments demand an ADR with rationale, version update, and approval from engineering and security leads.
+- Versioning follows semantic rules: MAJOR for principle rewrites/removals, MINOR for additions, PATCH for clarifications.
+- Compliance audits occur quarterly; findings enter the backlog with accountable owners.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.1 | **Ratified**: 2025-10-27 | **Last Amended**: 2025-10-28
