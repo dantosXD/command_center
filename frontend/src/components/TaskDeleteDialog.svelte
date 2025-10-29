@@ -9,6 +9,7 @@
 
   import { createEventDispatcher } from 'svelte';
   import { taskStore, type Task } from '$lib/stores/tasks';
+  import { toastStore } from '$lib/stores/toast';
 
   interface $$Props {
     open?: boolean;
@@ -42,10 +43,13 @@
 
     try {
       await taskStore.deleteTask(task.id);
+      toastStore.add(`Task "${task.title}" deleted successfully`, 'success', 3000);
       dispatch('deleted', { taskId: task.id });
       closeDialog();
     } catch (err: any) {
-      error = err.message || 'Failed to delete task';
+      const errorMessage = err.message || 'Failed to delete task';
+      error = errorMessage;
+      toastStore.add(errorMessage, 'error', 5000);
       loading = false;
     }
   }
@@ -69,7 +73,9 @@
       on:click|stopPropagation
       on:keydown={handleKeyDown}
       role="alertdialog"
-      aria-labelledby="dialog-title"
+      aria-modal="true"
+      aria-labelledby="delete-dialog-title"
+      aria-describedby="delete-dialog-desc"
       tabindex="-1"
     >
       <!-- Icon -->
@@ -88,7 +94,7 @@
 
       <!-- Content -->
       <div class="px-6 py-4">
-        <h3 id="dialog-title" class="text-lg font-semibold text-gray-900 mb-2">
+        <h3 id="delete-dialog-title" class="text-lg font-semibold text-gray-900 mb-2">
           Delete Task?
         </h3>
 
@@ -96,18 +102,22 @@
         <div class="bg-gray-50 p-3 rounded mb-4 border border-gray-200">
           <p class="font-medium text-gray-900 break-words">{task.title}</p>
           {#if task.description}
-            <p class="text-sm text-gray-600 break-words mt-1">{task.description}</p>
+            <p class="text-sm text-gray-700 break-words mt-1">{task.description}</p>
           {/if}
         </div>
 
         <!-- Warning -->
-        <p class="text-sm text-gray-600 mb-4">
+        <p id="delete-dialog-desc" class="text-sm text-gray-700 mb-4">
           This action <span class="font-semibold">cannot be undone</span>. Any subtasks or dependencies will also be deleted.
         </p>
 
         <!-- Error Message -->
         {#if error}
-          <div class="p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700 mb-4">
+          <div
+            class="p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700 mb-4"
+            role="alert"
+            aria-live="polite"
+          >
             {error}
           </div>
         {/if}
@@ -137,7 +147,7 @@
       </div>
 
       <!-- Footer -->
-      <div class="px-6 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
+      <div class="px-6 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-700">
         Press Enter to confirm or Escape to cancel
       </div>
     </div>

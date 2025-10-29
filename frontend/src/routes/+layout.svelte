@@ -1,5 +1,7 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
+	import '../styles.css';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
 	let { children } = $props();
 </script>
@@ -10,4 +12,5 @@
 	<title>Command Center - Unified Productivity Hub</title>
 </svelte:head>
 
+<ToastContainer />
 {@render children?.()}

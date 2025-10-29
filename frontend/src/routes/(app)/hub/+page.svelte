@@ -75,7 +75,7 @@
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-3xl font-bold text-gray-900">Hub</h1>
-          <p class="mt-1 text-gray-500">Your unified dashboard for tasks and events</p>
+          <p class="mt-1 text-gray-700">Your unified dashboard for tasks and events</p>
         </div>
         <a
           href="/tasks"
@@ -93,22 +93,22 @@
   <!-- Main Content -->
   <div class="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
     <!-- Overview Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <div class="text-gray-500 text-sm font-medium">Total Tasks</div>
-        <div class="text-3xl font-bold text-gray-900 mt-2">{tasks.length}</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200">
+        <div class="text-gray-700 text-xs sm:text-sm font-medium">Total Tasks</div>
+        <div class="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{tasks.length}</div>
       </div>
-      <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <div class="text-gray-500 text-sm font-medium">In Progress</div>
-        <div class="text-3xl font-bold text-blue-600 mt-2">{inProgressTasks.length}</div>
+      <div class="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200">
+        <div class="text-gray-700 text-xs sm:text-sm font-medium">In Progress</div>
+        <div class="text-2xl sm:text-3xl font-bold text-blue-600 mt-2">{inProgressTasks.length}</div>
       </div>
-      <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <div class="text-gray-500 text-sm font-medium">Due Today</div>
-        <div class="text-3xl font-bold text-orange-600 mt-2">{todaysTasks.length}</div>
+      <div class="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200">
+        <div class="text-gray-700 text-xs sm:text-sm font-medium">Due Today</div>
+        <div class="text-2xl sm:text-3xl font-bold text-orange-600 mt-2">{todaysTasks.length}</div>
       </div>
-      <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <div class="text-gray-500 text-sm font-medium">Overdue</div>
-        <div class="text-3xl font-bold text-red-600 mt-2">{overdueTasks.length}</div>
+      <div class="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200">
+        <div class="text-gray-700 text-xs sm:text-sm font-medium">Overdue</div>
+        <div class="text-2xl sm:text-3xl font-bold text-red-600 mt-2">{overdueTasks.length}</div>
       </div>
     </div>
 
@@ -125,7 +125,7 @@
                 <div class="flex-1">
                   <p class="font-medium text-gray-900">{task.title}</p>
                   {#if task.description}
-                    <p class="text-sm text-gray-500 mt-1">{task.description}</p>
+                    <p class="text-sm text-gray-700 mt-1">{task.description}</p>
                   {/if}
                   <div class="flex items-center gap-2 mt-2">
                     <span class="px-2 py-1 rounded text-xs font-medium {getStatusClass(task.status)}">
@@ -156,14 +156,14 @@
                 <div class="flex-1">
                   <p class="font-medium text-gray-900">{task.title}</p>
                   {#if task.description}
-                    <p class="text-sm text-gray-500 mt-1">{task.description}</p>
+                    <p class="text-sm text-gray-700 mt-1">{task.description}</p>
                   {/if}
                   <div class="flex items-center gap-2 mt-2">
                     <span class="px-2 py-1 rounded text-xs font-medium {getStatusClass(task.status)}">
                       {task.status}
                     </span>
                     {#if task.assigned_to}
-                      <span class="text-xs text-gray-600">Assigned to {task.assigned_to}</span>
+                      <span class="text-xs text-gray-700">Assigned to {task.assigned_to}</span>
                     {/if}
                   </div>
                 </div>
@@ -187,17 +187,17 @@
                 <div class="flex-1">
                   <p class="font-medium text-gray-900">{task.title}</p>
                   {#if task.description}
-                    <p class="text-sm text-gray-500 mt-1">{task.description}</p>
+                    <p class="text-sm text-gray-700 mt-1">{task.description}</p>
                   {/if}
                   <div class="flex items-center gap-2 mt-2">
                     <span class="px-2 py-1 rounded text-xs font-medium {getStatusClass(task.status)}">
                       {task.status}
                     </span>
                     {#if task.due_at}
-                      <span class="text-xs text-gray-600">Due {formatRelativeDate(task.due_at)}</span>
+                      <span class="text-xs text-gray-700">Due {formatRelativeDate(task.due_at)}</span>
                     {/if}
                     {#if task.assigned_to}
-                      <span class="text-xs text-gray-600">Assigned to {task.assigned_to}</span>
+                      <span class="text-xs text-gray-700">Assigned to {task.assigned_to}</span>
                     {/if}
                   </div>
                 </div>
@@ -222,7 +222,7 @@
           </svg>
         </div>
         <p class="text-lg font-medium text-gray-900">No tasks yet</p>
-        <p class="text-gray-500 mt-2">Create your first task to get started</p>
+        <p class="text-gray-700 mt-2">Create your first task to get started</p>
         <a href="/tasks" class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
           Create Task
         </a>

@@ -74,7 +74,7 @@
     checked={selected}
     on:change={() => dispatch('select')}
     class="w-5 h-5 text-blue-600 rounded cursor-pointer"
-    aria-label="Select task"
+    aria-label={`Select ${task.title} task`}
   />
 
   <!-- Task Title -->
@@ -111,10 +111,11 @@
   <div class="flex items-center gap-1 flex-shrink-0 opacity-0 hover:opacity-100 transition-opacity">
     <button
       class="p-1 rounded hover:bg-blue-100 text-blue-600"
+      aria-label={`Edit ${task.title} task`}
       title="Edit task (Cmd+E)"
       on:click|stopPropagation={() => dispatch('edit')}
     >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -125,10 +126,11 @@
     </button>
     <button
       class="p-1 rounded hover:bg-red-100 text-red-600"
+      aria-label={`Delete ${task.title} task`}
       title="Delete task (Cmd+D)"
       on:click|stopPropagation={() => dispatch('delete')}
     >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"

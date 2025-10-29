@@ -19,7 +19,7 @@
       <h1 class="text-5xl font-bold text-gray-900 mb-4">
         Command Center
       </h1>
-      <p class="text-xl text-gray-600 mb-8">
+      <p class="text-xl text-gray-700 mb-8">
         Your unified productivity hub for work and life
       </p>
       <div class="inline-block bg-blue-100 text-blue-900 px-4 py-2 rounded-lg text-sm font-medium">
@@ -38,7 +38,7 @@
             </svg>
           </div>
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Tasks</h3>
-          <p class="text-gray-600 text-sm">Create, manage, and track your work with tasks, checklists, and subtasks</p>
+          <p class="text-gray-700 text-sm">Create, manage, and track your work with tasks, checklists, and subtasks</p>
           <div class="mt-4 text-blue-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
             Get started →
           </div>
@@ -54,7 +54,7 @@
             </svg>
           </div>
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Calendar</h3>
-          <p class="text-gray-600 text-sm">Schedule events, manage meetings, and sync across your devices</p>
+          <p class="text-gray-700 text-sm">Schedule events, manage meetings, and sync across your devices</p>
           <div class="mt-4 text-purple-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
             Get started →
           </div>
@@ -70,7 +70,7 @@
             </svg>
           </div>
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Hub</h3>
-          <p class="text-gray-600 text-sm">Unified dashboard view of all your tasks, events, and activity</p>
+          <p class="text-gray-700 text-sm">Unified dashboard view of all your tasks, events, and activity</p>
           <div class="mt-4 text-green-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
             Get started →
           </div>
@@ -92,7 +92,7 @@
             </svg>
             Keyboard Shortcuts
           </h3>
-          <div class="space-y-2 text-sm text-gray-600">
+          <div class="space-y-2 text-sm text-gray-700">
             <div class="flex justify-between"><span class="font-mono">Cmd+N</span><span>Create new task</span></div>
             <div class="flex justify-between"><span class="font-mono">Cmd+E</span><span>Edit task</span></div>
             <div class="flex justify-between"><span class="font-mono">Cmd+D</span><span>Delete task</span></div>
@@ -109,7 +109,7 @@
             </svg>
             Features
           </h3>
-          <div class="space-y-2 text-sm text-gray-600">
+          <div class="space-y-2 text-sm text-gray-700">
             <div>✓ Real-time collaboration with your team</div>
             <div>✓ Works on desktop, mobile, and tablet</div>
             <div>✓ Comments and mentions support</div>
@@ -125,7 +125,7 @@
       <a href="/tasks" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors">
         Open Tasks
       </a>
-      <p class="text-gray-600 text-sm mt-4">
+      <p class="text-gray-700 text-sm mt-4">
         Press <span class="font-mono bg-gray-100 px-2 py-1 rounded">Cmd+N</span> to create your first task
       </p>
     </div>
