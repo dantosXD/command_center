@@ -3,21 +3,39 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+/**
+ * Hub Search Edge Function
+ * Provides full-text search across tasks and events with filtering
+ *
+ * Query Parameters:
+ * - search_term: Full-text search query
+ * - domain_id: Filter by domain (optional)
+ * - status: Filter by task status (optional)
+ * - priority: Filter by priority (optional)
+ * - date_from: Filter by start date (optional)
+ * - date_to: Filter by end date (optional)
+ * - limit: Results per page (default: 50)
+ * - offset: Pagination offset (default: 0)
+ */
+
 serve(async (req) => {
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   try {
+    // Initialize Supabase client with user's auth token
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     );
 
+    // Authenticate user
     const {
       data: { user },
       error: authError,
@@ -30,64 +48,121 @@ serve(async (req) => {
       });
     }
 
-    // Feature flag guard (central-hub-mvp)
+    // Check feature flag
     const { data: enabled } = await supabaseClient.rpc('feature_flag_enabled', {
-      flag_key: 'central-hub-mvp',
+      flag_key: 'search-beta',
     });
+
     if (!enabled) {
-      return new Response(JSON.stringify({ error: 'Feature disabled' }), {
+      return new Response(JSON.stringify({ error: 'Search feature not enabled' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
+    // Parse request body
     const {
-      p_query = '',
-      p_domain_id = null,
-      p_statuses = null,
-      p_priorities = null,
-      p_due_from = null,
-      p_due_to = null,
-      p_event_starts_from = null,
-      p_event_starts_to = null,
-      p_limit = 50,
-      p_offset = 0,
+      search_term,
+      domain_id,
+      status,
+      priority,
+      date_from,
+      date_to,
+      limit = 50,
+      offset = 0,
     } = await req.json();
 
-    // NOTE: The materialized view hub_search_mv can be queried directly,
-    // but to keep RLS we use the already-defined SQL function search_tasks_and_events
-    // which internally queries the materialized view.
-    const { data, error } = await supabaseClient.rpc('search_tasks_and_events', {
-      p_query,
-      p_domain_id,
-      p_statuses,
-      p_priorities,
-      p_due_from,
-      p_due_to,
-      p_event_starts_from,
-      p_event_starts_to,
-      p_limit,
-      p_offset,
-    });
-
-    if (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
+    // Validate search term
+    if (!search_term || search_term.trim().length === 0) {
+      return new Response(JSON.stringify({ error: 'search_term is required' }), {
+        status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Optional: add natural language parse hooks (quick-add intent)
-    // For now, return raw results; the frontend quick-add parser handles intent
+    // Build search query using hub_search view (with pg_trgm index)
+    // The view should already have RLS applied via underlying tables
+    let query = supabaseClient
+      .from('hub_search')
+      .select('*')
+      .textSearch('search_vector', search_term, {
+        type: 'websearch',
+        config: 'english',
+      })
+      .order('relevance', { ascending: false })
+      .range(offset, offset + limit - 1);
 
-    return new Response(JSON.stringify({ data }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    // Apply filters
+    if (domain_id) {
+      query = query.eq('domain_id', domain_id);
+    }
+
+    if (status) {
+      query = query.eq('status', status);
+    }
+
+    if (priority !== undefined && priority !== null) {
+      query = query.eq('priority', priority);
+    }
+
+    if (date_from) {
+      query = query.gte('sort_date', date_from);
+    }
+
+    if (date_to) {
+      query = query.lte('sort_date', date_to);
+    }
+
+    // Execute query
+    const { data, error, count } = await query;
+
+    if (error) {
+      console.error('Search query error:', error);
+      return new Response(
+        JSON.stringify({ error: error.message || 'Search failed' }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // Return results with pagination metadata
+    return new Response(
+      JSON.stringify({
+        data: data || [],
+        pagination: {
+          total: count || data?.length || 0,
+          limit,
+          offset,
+          has_more: (data?.length || 0) === limit,
+        },
+        query: {
+          search_term,
+          filters: {
+            domain_id,
+            status,
+            priority,
+            date_from,
+            date_to,
+          },
+        },
+      }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    console.error('Hub search error:', err);
+    return new Response(
+      JSON.stringify({
+        error: err instanceof Error ? err.message : 'Internal server error',
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   }
 });
