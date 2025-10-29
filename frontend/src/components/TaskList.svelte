@@ -83,6 +83,8 @@
   class="task-list bg-white rounded-lg shadow-sm border border-gray-200"
   on:keydown={handleKeyDown}
   role="list"
+  tabindex="0"
+  aria-label="Task list with keyboard navigation"
 >
   {#if loading}
     <div class="p-4 text-center text-gray-500">
