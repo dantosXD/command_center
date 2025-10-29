@@ -79,18 +79,18 @@
   }
 </script>
 
-<div
+<ul
   class="task-list bg-white rounded-lg shadow-sm border border-gray-200"
   on:keydown={handleKeyDown}
   role="list"
 >
   {#if loading}
     <div class="p-4 text-center text-gray-500">
-      <div class="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2" />
-      Loading tasks...
+      <div class="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2" aria-hidden="true" />
+      <span>Loading tasks...</span>
     </div>
   {:else if error}
-    <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
+    <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-700" role="alert">
       <p class="font-semibold">Error loading tasks</p>
       <p class="text-sm">{error}</p>
     </div>
@@ -101,6 +101,7 @@
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           stroke-linecap="round"
@@ -115,21 +116,26 @@
   {:else}
     <div class="divide-y divide-gray-100">
       {#each tasks as task (task.id)}
-        <div
+        <li
           class="task-item-wrapper {selectedTaskId === task.id ? 'bg-blue-50' : 'hover:bg-gray-50'} transition-colors"
           role="listitem"
-          on:click={() => selectTask(task.id)}
         >
-          <TaskListItem
-            {task}
-            selected={selectedTaskId === task.id}
-            on:select={() => selectTask(task.id)}
-          />
-        </div>
+          <button
+            on:click={() => selectTask(task.id)}
+            class="w-full text-left"
+            aria-pressed={selectedTaskId === task.id}
+          >
+            <TaskListItem
+              {task}
+              selected={selectedTaskId === task.id}
+              on:select={() => selectTask(task.id)}
+            />
+          </button>
+        </li>
       {/each}
     </div>
   {/if}
-</div>
+</ul>
 
 <style>
   .task-list {

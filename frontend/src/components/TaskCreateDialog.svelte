@@ -108,6 +108,7 @@
       on:keydown={handleKeyDown}
       role="dialog"
       aria-labelledby="dialog-title"
+      tabindex="-1"
     >
       <!-- Header -->
       <div class="px-6 py-4 border-b border-gray-200">
@@ -119,7 +120,7 @@
         <!-- Title Field (Required) -->
         <div>
           <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
-            Task Title <span class="text-red-500">*</span>
+            Task Title <span class="text-red-500" aria-label="required">*</span>
           </label>
           <input
             id="title"
@@ -127,8 +128,8 @@
             bind:value={title}
             placeholder="What needs to be done?"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            autofocus
             disabled={loading}
+            required
           />
         </div>
 
@@ -144,7 +145,7 @@
             rows="3"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             disabled={loading}
-          />
+          ></textarea>
         </div>
 
         <!-- Status Field -->
@@ -229,7 +230,7 @@
 
       <!-- Footer hint -->
       <div class="px-6 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
-        💡 Tip: Press Escape to cancel, Cmd+Enter to submit
+        Tip: Press Escape to cancel, Cmd+Enter to submit
       </div>
     </div>
   </div>

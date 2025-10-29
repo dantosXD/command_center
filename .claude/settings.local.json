@@ -38,7 +38,12 @@
       "Bash(for migration in backend/supabase/migrations/*.sql)",
       "Bash(npm cache clean:*)",
       "Bash(npm run:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(pnpm --version:*)",
+      "Bash(/c/Users/207ds/AppData/Roaming/npm/pnpm install)",
+      "Bash(curl:*)",
+      "Bash(tree:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

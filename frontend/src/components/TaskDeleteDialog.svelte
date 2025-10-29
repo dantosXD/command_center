@@ -70,11 +70,12 @@
       on:keydown={handleKeyDown}
       role="alertdialog"
       aria-labelledby="dialog-title"
+      tabindex="-1"
     >
       <!-- Icon -->
       <div class="bg-red-50 px-6 py-4 flex justify-center">
         <div class="flex-shrink-0">
-          <svg class="h-12 w-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-12 w-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -137,7 +138,7 @@
 
       <!-- Footer -->
       <div class="px-6 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
-        💡 Press Enter to confirm or Escape to cancel
+        Press Enter to confirm or Escape to cancel
       </div>
     </div>
   </div>
