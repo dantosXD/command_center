@@ -52,7 +52,10 @@
       "mcp__zen__thinkdeep",
       "Bash(pnpm --filter frontend test -- timezone.test.ts)",
       "Bash(where:*)",
-      "mcp__zen__consensus"
+      "mcp__zen__consensus",
+      "Bash(npx pnpm install:*)",
+      "Bash(npx pnpm:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
