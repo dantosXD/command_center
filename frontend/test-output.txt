@@ -1,0 +1,213 @@
+
+Running 14 tests using 6 workers
+
+  ok  4 [chromium] › tests\e2e\floating-panel.spec.ts:42:3 › Floating Panel E2E Tests › should display notifications with timestamps (1.2s)
+  ok  2 [chromium] › tests\e2e\floating-panel.spec.ts:18:3 › Floating Panel E2E Tests › should display floating panel with notifications tab (1.4s)
+  x   6 [chromium] › tests\e2e\floating-panel.spec.ts:57:3 › Floating Panel E2E Tests › should minimize and expand panel (1.2s)
+  x   1 [chromium] › tests\e2e\floating-panel.spec.ts:91:3 › Floating Panel E2E Tests › should persist panel state after reload (2.0s)
+  ok  8 [chromium] › tests\e2e\floating-panel.spec.ts:121:3 › Floating Panel E2E Tests › should announce updates to screen readers (810ms)
+  x   9 [chromium] › tests\e2e\floating-panel.spec.ts:153:3 › Floating Panel E2E Tests › should have proper WCAG 2.2 AA contrast ratios (715ms)
+  ok 11 [chromium] › tests\e2e\floating-panel.spec.ts:145:3 › Floating Panel E2E Tests › should display error messages on API failure (734ms)
+  ok 10 [chromium] › tests\e2e\floating-panel.spec.ts:132:3 › Floating Panel E2E Tests › should handle empty states gracefully (1.0s)
+  ok 12 [chromium] › tests\e2e\floating-panel.spec.ts:178:3 › Floating Panel E2E Tests › should load notifications within 2 seconds (557ms)
+  x   3 [chromium] › tests\e2e\floating-panel.spec.ts:26:3 › Floating Panel E2E Tests › should switch between tabs (6.2s)
+  ok 13 [chromium] › tests\e2e\floating-panel.spec.ts:166:3 › Floating Panel E2E Tests › should support screen reader announcements (1.1s)
+  x   7 [chromium] › tests\e2e\floating-panel.spec.ts:105:3 › Floating Panel E2E Tests › should support keyboard navigation (5.9s)
+  x  14 [chromium] › tests\e2e\floating-panel.spec.ts:189:3 › Floating Panel E2E Tests › should respond to tab switches within 100ms (1.1s)
+  x   5 [chromium] › tests\e2e\floating-panel.spec.ts:74:3 › Floating Panel E2E Tests › should drag panel to new position (30.1s)
+
+
+  1) [chromium] › tests\e2e\floating-panel.spec.ts:26:3 › Floating Panel E2E Tests › should switch between tabs 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('[role="region"][aria-label="Reminders list"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('[role="region"][aria-label="Reminders list"]')[22m
+
+
+      30 |
+      31 |     const remindersList = page.locator('[role="region"][aria-label="Reminders list"]');
+    > 32 |     await expect(remindersList).toBeVisible();
+         |                                 ^
+      33 |
+      34 |     const tasksTab = page.locator('[role="tab"][aria-label="Tasks tab"]');
+      35 |     await tasksTab.click();
+        at C:\Users\207ds\Desktop\Apps\command_center\command_center\frontend\tests\e2e\floating-panel.spec.ts:32:33
+
+    Error Context: test-results\floating-panel-Floating-Pa-6abf0--should-switch-between-tabs-chromium\error-context.md
+
+  2) [chromium] › tests\e2e\floating-panel.spec.ts:57:3 › Floating Panel E2E Tests › should minimize and expand panel 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: < [32m100[39m
+    Received:   [31m384[39m
+
+      62 |     const panel = page.locator('[role="region"][aria-label*="Floating panel"]');
+      63 |     const boundingBox = await panel.boundingBox();
+    > 64 |     expect(boundingBox?.height).toBeLessThan(100); // Minimized height
+         |                                 ^
+      65 |
+      66 |     // Expand
+      67 |     const expandButton = page.locator('button[aria-label*="Expand"]');
+        at C:\Users\207ds\Desktop\Apps\command_center\command_center\frontend\tests\e2e\floating-panel.spec.ts:64:33
+
+    Error Context: test-results\floating-panel-Floating-Pa-7ca8f-d-minimize-and-expand-panel-chromium\error-context.md
+
+  3) [chromium] › tests\e2e\floating-panel.spec.ts:74:3 › Floating Panel E2E Tests › should drag panel to new position 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.dragTo: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('[role="banner"]')[22m
+    [2m    - locator resolved to <div role="banner" aria-label="Panel header - drag to move" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 rounded-t-lg flex items-center justify-between cursor-move s-DLoa6sREcfAt">…</div>[22m
+    [2m  - attempting move and down action[22m
+    [2m    - waiting for element to be visible and stable[22m
+    [2m    - element is visible and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - performing move and down action[22m
+    [2m    - move and down action done[22m
+    [2m    - waiting for scheduled navigations to finish[22m
+    [2m    - navigations have finished[22m
+    [2m  - waiting for locator('[role="banner"]')[22m
+    [2m    - locator resolved to <div role="banner" aria-label="Panel header - drag to move" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 rounded-t-lg flex items-center justify-between cursor-move s-DLoa6sREcfAt">…</div>[22m
+    [2m  - attempting move and up action[22m
+    [2m    2 × waiting for element to be visible and stable[22m
+    [2m      - element is visible and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <li tabindex="0" role="button" aria-label="Notification: Welcome to Command Center" class="p-3 hover:bg-gray-50 cursor-pointer transition-colors s-DLoa6sREcfAt">…</li> from <div class="flex-1 overflow-y-auto h-[calc(100%-112px)] s-DLoa6sREcfAt">…</div> subtree intercepts pointer events[22m
+    [2m    - retrying move and up action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible and stable[22m
+    [2m      - element is visible and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <li tabindex="0" role="button" aria-label="Notification: Welcome to Command Center" class="p-3 hover:bg-gray-50 cursor-pointer transition-colors s-DLoa6sREcfAt">…</li> from <div class="flex-1 overflow-y-auto h-[calc(100%-112px)] s-DLoa6sREcfAt">…</div> subtree intercepts pointer events[22m
+    [2m    - retrying move and up action[22m
+    [2m      - waiting 100ms[22m
+    [2m    55 × waiting for element to be visible and stable[22m
+    [2m       - element is visible and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <li tabindex="0" role="button" aria-label="Notification: Welcome to Command Center" class="p-3 hover:bg-gray-50 cursor-pointer transition-colors s-DLoa6sREcfAt">…</li> from <div class="flex-1 overflow-y-auto h-[calc(100%-112px)] s-DLoa6sREcfAt">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying move and up action[22m
+    [2m       - waiting 500ms[22m
+
+
+      78 |     if (initialBox) {
+      79 |       // Drag panel
+    > 80 |       await header.dragTo(header, {
+         |                    ^
+      81 |         sourcePosition: { x: initialBox.width / 2, y: 10 },
+      82 |         targetPosition: { x: 200, y: 100 },
+      83 |       });
+        at C:\Users\207ds\Desktop\Apps\command_center\command_center\frontend\tests\e2e\floating-panel.spec.ts:80:20
+
+    Error Context: test-results\floating-panel-Floating-Pa-5824f--drag-panel-to-new-position-chromium\error-context.md
+
+  4) [chromium] › tests\e2e\floating-panel.spec.ts:91:3 › Floating Panel E2E Tests › should persist panel state after reload 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: < [32m100[39m
+    Received:   [31m384[39m
+
+      100 |     const panel = page.locator('[role="region"][aria-label*="Floating panel"]');
+      101 |     const boundingBox = await panel.boundingBox();
+    > 102 |     expect(boundingBox?.height).toBeLessThan(100);
+          |                                 ^
+      103 |   });
+      104 |
+      105 |   test('should support keyboard navigation', async ({ page }) => {
+        at C:\Users\207ds\Desktop\Apps\command_center\command_center\frontend\tests\e2e\floating-panel.spec.ts:102:33
+
+    Error Context: test-results\floating-panel-Floating-Pa-3f4c9-st-panel-state-after-reload-chromium\error-context.md
+
+  5) [chromium] › tests\e2e\floating-panel.spec.ts:105:3 › Floating Panel E2E Tests › should support keyboard navigation 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeFocused[2m([22m[2m)[22m failed
+
+    Locator:  locator('[role="tab"][aria-selected="true"]')
+    Expected: focused
+    Received: inactive
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "toBeFocused" with timeout 5000ms[22m
+    [2m  - waiting for locator('[role="tab"][aria-selected="true"]')[22m
+    [2m    8 × locator resolved to <button role="tab" aria-selected="true" aria-label="Notifications tab" class="flex-1 px-4 py-2 text-sm font-medium border-b-2 transition-colors border-blue-600 text-blue-600 s-DLoa6sREcfAt">…</button>[22m
+    [2m      - unexpected value "inactive"[22m
+
+
+      109 |
+      110 |     const activeTab = page.locator('[role="tab"][aria-selected="true"]');
+    > 111 |     await expect(activeTab).toBeFocused();
+          |                             ^
+      112 |
+      113 |     // Arrow right to next tab
+      114 |     await page.keyboard.press('ArrowRight');
+        at C:\Users\207ds\Desktop\Apps\command_center\command_center\frontend\tests\e2e\floating-panel.spec.ts:111:29
+
+    Error Context: test-results\floating-panel-Floating-Pa-61959-support-keyboard-navigation-chromium\error-context.md
+
+  6) [chromium] › tests\e2e\floating-panel.spec.ts:153:3 › Floating Panel E2E Tests › should have proper WCAG 2.2 AA contrast ratios 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0[39m
+    Received:   [31m0[39m
+
+      155 |     const panelText = page.locator('[role="region"] text');
+      156 |     const count = await panelText.count();
+    > 157 |     expect(count).toBeGreaterThan(0);
+          |                   ^
+      158 |
+      159 |     // All text should be visible
+      160 |     for (let i = 0; i < Math.min(count, 5); i++) {
+        at C:\Users\207ds\Desktop\Apps\command_center\command_center\frontend\tests\e2e\floating-panel.spec.ts:157:19
+
+    Error Context: test-results\floating-panel-Floating-Pa-67349-WCAG-2-2-AA-contrast-ratios-chromium\error-context.md
+
+  7) [chromium] › tests\e2e\floating-panel.spec.ts:189:3 › Floating Panel E2E Tests › should respond to tab switches within 100ms 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('[role="region"][aria-label="Reminders list"]')
+    Expected: visible
+    Timeout: 300ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 300ms[22m
+    [2m  - waiting for locator('[role="region"][aria-label="Reminders list"]')[22m
+
+
+      194 |
+      195 |     const remindersList = page.locator('[role="region"][aria-label="Reminders list"]');
+    > 196 |     await expect(remindersList).toBeVisible({ timeout: 300 }); // Increased timeout
+          |                                 ^
+      197 |
+      198 |     const responseTime = Date.now() - startTime;
+      199 |     expect(responseTime).toBeLessThan(300); // Increased threshold
+        at C:\Users\207ds\Desktop\Apps\command_center\command_center\frontend\tests\e2e\floating-panel.spec.ts:196:33
+
+    Error Context: test-results\floating-panel-Floating-Pa-f6ef9-o-tab-switches-within-100ms-chromium\error-context.md
+
+  7 failed
+    [chromium] › tests\e2e\floating-panel.spec.ts:26:3 › Floating Panel E2E Tests › should switch between tabs 
+    [chromium] › tests\e2e\floating-panel.spec.ts:57:3 › Floating Panel E2E Tests › should minimize and expand panel 
+    [chromium] › tests\e2e\floating-panel.spec.ts:74:3 › Floating Panel E2E Tests › should drag panel to new position 
+    [chromium] › tests\e2e\floating-panel.spec.ts:91:3 › Floating Panel E2E Tests › should persist panel state after reload 
+    [chromium] › tests\e2e\floating-panel.spec.ts:105:3 › Floating Panel E2E Tests › should support keyboard navigation 
+    [chromium] › tests\e2e\floating-panel.spec.ts:153:3 › Floating Panel E2E Tests › should have proper WCAG 2.2 AA contrast ratios 
+    [chromium] › tests\e2e\floating-panel.spec.ts:189:3 › Floating Panel E2E Tests › should respond to tab switches within 100ms 
+  7 passed (34.3s)

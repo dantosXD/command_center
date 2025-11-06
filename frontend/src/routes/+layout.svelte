@@ -2,6 +2,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import '../styles.css';
 	import ToastContainer from '../components/ToastContainer.svelte';
+	import FloatingPanel from '../components/FloatingPanel.svelte';
 
 	let { children } = $props();
 </script>
@@ -13,4 +14,5 @@
 </svelte:head>
 
 <ToastContainer />
+<FloatingPanel />
 {@render children?.()}

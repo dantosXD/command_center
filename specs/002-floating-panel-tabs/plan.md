@@ -1,13 +1,13 @@
-# Implementation Plan: [FEATURE]
+# Implementation Plan: Floating Panel Tabs
 
-**Branch**: `[###-feature-name]` | **Date**: 2025-10-31 | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**Branch**: `002-floating-panel-tabs` | **Date**: 2025-10-31 | **Spec**: [Floating Panel Tabs Specification](./spec.md)
+**Input**: Feature specification from `/specs/002-floating-panel-tabs/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-[Extract from feature spec: primary requirement + technical approach from research]
+Implement a floating panel application with tabbed interface to provide users with a persistent, non-intrusive view of notifications, reminders, and tasks. The panel will be draggable, minimizable, and maintain state across sessions. This feature transforms the command center into a unified productivity hub accessible from anywhere in the user's workflow.
 
 ## Technical Context
 
@@ -17,15 +17,15 @@
   the iteration process.
 -->
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Language/Version**: TypeScript/Node.js (existing stack)  
+**Primary Dependencies**: React, TailwindCSS, Lucide Icons, shadcn/ui (existing stack)  
+**Storage**: Local browser storage for panel state (position, minimized status); backend APIs for notifications/reminders/tasks  
+**Testing**: Vitest (unit), Playwright (E2E), React Testing Library (component)  
+**Target Platform**: Web browser (desktop-first, responsive)  
+**Project Type**: Web application (frontend + backend integration)  
+**Performance Goals**: Panel loads within 2 seconds; tab switching <100ms; real-time updates via WebSocket  
+**Constraints**: <50KB bundle size for panel component; no performance impact on main app; works offline (cached data)  
+**Scale/Scope**: Single feature module; ~500 LOC frontend; integrates with existing notification/reminder/task APIs
 
 ## Constitution Check
 
@@ -33,13 +33,13 @@
 
 Verify the feature plan satisfies every constitution guardrail:
 
-- ✅ Accessibility: Define WCAG 2.2 AA acceptance criteria and audit strategy (manual + automated).
-- ✅ Security: Document RLS policy updates, threat model notes, and secret handling.
-- ✅ Testing: Identify required unit, contract, RLS, and e2e smoke suites and owners.
-- ✅ Delivery: Describe feature flag rollout plan, rollback triggers, and sunset timing.
-- ✅ Operations: Confirm idempotent job/workflow design and disaster recovery implications.
-- ✅ Build & Release: Capture reproducibility constraints (pinned deps, build tooling) for implementation.
-- ✅ Documentation: List ADR(s) that will record architectural decisions in `/docs/adr`.
+- ✅ **Accessibility**: Panel must be fully keyboard navigable (Tab to switch tabs, Enter to interact). Screen readers announce tab names and content updates. Contrast ratios meet WCAG 2.2 AA. Minimize/expand buttons have clear labels. Automated testing via axe-core; manual audit before GA.
+- ✅ **Security**: Panel data (notifications, reminders, tasks) uses existing RLS policies - users see only their own data. No new secrets needed. Panel state stored locally (no sensitive data). Threat model: no new attack surface (read-only display of existing data).
+- ✅ **Testing**: Unit tests for tab switching and state management; component tests for dragging/minimize; E2E tests for primary journeys; accessibility tests for keyboard/screen reader; performance tests confirming <100ms interactions.
+- ✅ **Delivery**: Feature ships behind flag `floating_panel_tabs`. Staged rollout: 10% → 25% → 50% → 100% over 2 weeks. Rollback trigger: error rate >5% or performance degradation >20%. Flag removal 1 month post-GA.
+- ✅ **Operations**: Panel state is local (no backend persistence). No background jobs or queues. No disaster recovery implications. Panel gracefully degrades if APIs are unavailable (shows cached/empty state).
+- ✅ **Build & Release**: Dependencies pinned in package.json. Build is deterministic (pnpm lockfile). No new tooling required.
+- ✅ **Documentation**: ADR `floating-panel-architecture` will document design decisions (tab structure, state management, drag implementation).
 
 ## Project Structure
 
@@ -56,51 +56,49 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
-
-tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
 frontend/
 ├── src/
 │   ├── components/
-│   ├── pages/
-│   └── services/
+│   │   ├── FloatingPanel/
+│   │   │   ├── FloatingPanel.tsx          # Main panel container
+│   │   │   ├── FloatingPanel.test.tsx
+│   │   │   ├── PanelHeader.tsx            # Draggable header with minimize button
+│   │   │   ├── TabBar.tsx                 # Tab navigation
+│   │   │   ├── NotificationsTab.tsx       # Notifications content
+│   │   │   ├── RemindersTab.tsx           # Reminders content
+│   │   │   ├── TasksTab.tsx               # Tasks content
+│   │   │   └── styles.ts                  # Tailwind classes
+│   ├── hooks/
+│   │   ├── useFloatingPanel.ts            # Panel state management
+│   │   ├── usePanelPosition.ts            # Drag/position logic
+│   │   └── usePanelStorage.ts             # LocalStorage persistence
+│   ├── services/
+│   │   └── panelApi.ts                    # API calls for notifications/reminders/tasks
+│   └── types/
+│       └── panel.ts                       # TypeScript interfaces
 └── tests/
+    ├── unit/
+    │   ├── FloatingPanel.test.tsx
+    │   ├── usePanelPosition.test.ts
+    │   └── usePanelStorage.test.ts
+    ├── component/
+    │   └── FloatingPanel.integration.test.tsx
+    └── e2e/
+        └── floating-panel.spec.ts         # Playwright E2E tests
 
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+backend/
+├── src/
+│   └── api/
+│       ├── notifications.ts               # Existing endpoints
+│       ├── reminders.ts                   # Existing endpoints
+│       └── tasks.ts                       # Existing endpoints
+└── tests/
+    └── [existing test structure]
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**Structure Decision**: Web application with existing frontend/backend separation. Floating panel is a new feature module in `frontend/src/components/FloatingPanel/`. No backend changes required - panel consumes existing APIs. Panel state (position, minimized) stored in browser localStorage.
 
 ## Complexity Tracking
 
