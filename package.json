@@ -1,17 +1,27 @@
 {
   "name": "command-center",
+  "version": "1.0.0",
   "private": true,
   "workspaces": [
     "frontend",
     "backend"
   ],
   "scripts": {
+    "dev": "pnpm --filter frontend dev",
+    "build": "node scripts/version-info.js && pnpm --filter frontend build",
+    "build:prod": "pnpm install --frozen-lockfile && node scripts/version-info.js && pnpm --filter frontend build",
+    "preview": "pnpm --filter frontend preview",
+    "prebuild": "node scripts/version-info.js",
+    "postbuild": "echo '✅ Build completed successfully'",
+    "check-updates": "node scripts/check-updates.js",
     "fmt": "deno fmt backend/supabase/functions",
     "lint": "deno lint backend/supabase/functions",
     "test:contract": "dotenv -e .env.test -- vitest run tests/contract",
     "test:rls": "dotenv -e .env.test -- vitest run tests/rls",
     "test:accessibility": "dotenv -e .env.test -- vitest run tests/accessibility",
-    "test": "pnpm --filter frontend test && pnpm test:contract && pnpm test:rls && pnpm test:accessibility"
+    "test": "pnpm --filter frontend test && pnpm test:contract && pnpm test:rls && pnpm test:accessibility",
+    "version": "node -p \"require('./package.json').version\"",
+    "version:bump": "npm version"
   },
   "devDependencies": {
     "@supabase/supabase-js": "^2.48.0",
